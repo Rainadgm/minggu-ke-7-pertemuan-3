@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+	display: none !important;
+}
+
+@media print {
+	@page {
+		size: 80mm auto;
+		margin: 4mm;
+	}
+
+	body {
+		background: #fff !important;
+	}
+
+	body * {
+		visibility: hidden !important;
+	}
+
+	#receipt,
+	#receipt * {
+		visibility: visible !important;
+	}
+
+	#receipt {
+		display: block !important;
+		position: fixed;
+		inset: 0 auto auto 0;
+		width: 72mm;
+		padding: 0;
+	}
+}
