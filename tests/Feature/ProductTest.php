@@ -22,13 +22,17 @@ test('product creation route redirects back to cashier', function () {
     $response->assertRedirect(route('dashboard'));
 });
 
-test('home redirects guests to login and users to the cashier', function () {
+test('home opens the admin middleware route', function () {
     $guestResponse = $this->get('/');
-    $guestResponse->assertRedirect(route('dashboard'));
+    $guestResponse->assertRedirect(route('admin'));
+    $this->get(route('admin'))->assertRedirect(route('login'));
     $this->get(route('dashboard'))->assertRedirect(route('login'));
 
     $userResponse = $this->actingAs(User::factory()->create())->get('/');
-    $userResponse->assertRedirect(route('dashboard'));
+    $userResponse->assertRedirect(route('admin'));
+    $this->get(route('admin'))
+        ->assertForbidden()
+        ->assertSee('ANDA TIDAK MEMILIKI AKSES.');
 });
 
 test('cashier dashboard loads active and inactive products for inventory management', function () {
