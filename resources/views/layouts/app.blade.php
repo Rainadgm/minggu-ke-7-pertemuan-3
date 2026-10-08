@@ -54,7 +54,7 @@
                         <a href="{{ url('/') }}" class="transition hover:text-slate-900">Beranda</a>
                         <a href="{{ route('products.index') }}" class="transition hover:text-slate-900">Katalog</a>
                         <a href="{{ url('/#promo') }}" class="transition hover:text-slate-900">Promo</a>
-                        <a href="{{ route('dashboard') }}" class="transition hover:text-slate-900">Dashboard</a>
+                        <a href="{{ auth()->user()?->role === 'kasir' ? route('kasir.dashboard') : route('admin.dashboard') }}" class="transition hover:text-slate-900">Dashboard</a>
                     </div>
 
                     <p class="font-medium text-slate-500">© 2026 MiniMarket</p>

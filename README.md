@@ -54,6 +54,28 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
+## Printer struk kasir (Windows ESC/POS)
+
+Fitur printer memakai `mike42/escpos-php` dan antrean printer Windows. Pasang printer ESC/POS di komputer yang menjalankan aplikasi, lalu aktifkan **Share this printer** pada pengaturan berbagi printer Windows. Akun Windows yang menjalankan Apache/XAMPP juga harus memiliki izin untuk menggunakan antrean tersebut.
+
+Di dashboard kasir, pilih **Pilih printer** dan pilih printer yang dibagikan. Saat checkout, struk transaksi sebenarnya—nomor transaksi, kasir, barang, jumlah, total, pembayaran, dan kembalian—langsung dikirim ke printer pilihan. Setelah transaksi, tombol **Cetak struk transaksi** dapat digunakan untuk mencetak ulang struk tersebut. Printer yang dipilih disimpan di browser kasir.
+
+## Akun demo
+
+Jalankan `php artisan db:seed --class=UserSeeder` untuk membuat ulang akun demo. Seeder hanya mengganti akun `admin@minimarket.test` dan `kasir@minimarket.test`; akun lain tidak dihapus. Password kedua akun adalah `admin123` dan disimpan sebagai hash.
+
+## Hak akses admin dan kasir
+
+Admin dapat mengelola produk dan akun admin/kasir dari dashboard admin. Hanya produk aktif yang ditampilkan di dashboard kasir, sehingga perubahan produk admin langsung terbaca dari data bersama yang sama. Kasir tidak dapat membuka atau mengubah halaman pengelolaan admin; admin tidak dapat membuka dashboard kasir.
+
+## Checkout kasir
+
+Kasir dapat memilih produk aktif, mengubah jumlah barang di keranjang, memasukkan uang pembayaran, lalu checkout. Sistem memvalidasi stok dan pembayaran, mencatat transaksi beserta harga/nama barang saat transaksi, dan mengurangi stok secara atomik. Dashboard admin menampilkan ringkasan penjualan hari ini dan transaksi terbaru.
+
+## Gambar produk
+
+Setelah instalasi atau pemindahan aplikasi, buat tautan file publik Laravel dengan menjalankan `php artisan storage:link`. Gambar produk tersimpan di `storage/app/public/products` dan akan diakses melalui `public/storage`. Jika file gambar tertentu hilang, katalog menampilkan placeholder.
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

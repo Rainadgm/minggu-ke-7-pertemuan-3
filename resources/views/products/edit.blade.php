@@ -20,7 +20,10 @@
                     </div>
 
                     @if ($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="h-[360px] w-full rounded-[1.5rem] object-cover">
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" onerror="this.hidden = true; this.nextElementSibling.hidden = false;" class="h-[360px] w-full rounded-[1.5rem] object-cover">
+                        <div hidden class="flex h-[360px] w-full items-center justify-center rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-100 text-4xl font-black text-slate-400">
+                            {{ strtoupper(substr($product->name, 0, 1)) }}
+                        </div>
                     @else
                         <div class="flex h-[360px] w-full items-center justify-center rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-100 text-4xl font-black text-slate-400">
                             {{ strtoupper(substr($product->name, 0, 1)) }}
@@ -78,7 +81,7 @@
 
                                 @if ($product->image)
                                     <div class="mt-4 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="h-16 w-16 rounded-xl object-cover">
+                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" onerror="this.hidden = true;" class="h-16 w-16 rounded-xl object-cover">
                                         <label class="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
                                             <input type="checkbox" name="remove_image" value="1" class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
                                             Hapus gambar

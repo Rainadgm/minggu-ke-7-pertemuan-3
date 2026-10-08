@@ -18,7 +18,10 @@
             <div class="grid gap-8 lg:grid-cols-[1.05fr_1.2fr]">
                 <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-4 shadow-sm">
                     @if ($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="h-[460px] w-full rounded-[1.5rem] object-cover">
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" onerror="this.hidden = true; this.nextElementSibling.hidden = false;" class="h-[460px] w-full rounded-[1.5rem] object-cover">
+                        <div hidden class="flex h-[460px] w-full items-center justify-center rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-100 text-slate-400">
+                            Gambar tidak tersedia
+                        </div>
                     @else
                         <div class="flex h-[460px] w-full items-center justify-center rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-100 text-slate-400">
                             Tidak ada gambar

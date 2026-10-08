@@ -19,7 +19,7 @@ test('admin middleware allows administrators', function () {
     $this->actingAs(User::factory()->admin()->create())
         ->get(route('admin'))
         ->assertOk()
-        ->assertSee('Halaman Admin');
+        ->assertSee('Dashboard Admin');
 });
 
 test('admin middleware returns json for unauthorized json requests', function () {

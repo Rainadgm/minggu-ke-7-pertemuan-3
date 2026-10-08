@@ -12,20 +12,18 @@ class Kasir
     public function handle(Request $request, Closure $next): Response
     {
         // Cek apakah pengguna sudah login
-        if (!Auth::check()) {
-
+        if (! Auth::check()) {
             return redirect()->route('login');
-
         }
 
-        // Cek role kasir
         if (Auth::user()->role !== 'kasir') {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Akses ditolak!'], 403);
+            }
 
             return response()->view('errors.403', [], 403);
-
         }
 
-        // Jika role kasir, lanjutkan
         return $next($request);
     }
 }

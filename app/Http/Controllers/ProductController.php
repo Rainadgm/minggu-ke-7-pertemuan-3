@@ -11,11 +11,27 @@ class ProductController extends Controller
     /**
      * Menampilkan semua product.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::latest()->paginate(10);
+        $products = Product::query()
+            ->when($request->query('search'), function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('category', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->query('status') === 'active', fn ($query) => $query->where('is_active', true))
+            ->when($request->query('status') === 'inactive', fn ($query) => $query->where('is_active', false))
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
 
-        return view('products.index', compact('products'));
+        return view('admin.products.index', [
+            'products' => $products,
+            'productCount' => Product::count(),
+            'activeProductCount' => Product::where('is_active', true)->count(),
+            'lowStockCount' => Product::where('is_active', true)->where('stock', '<=', 5)->count(),
+        ]);
     }
 
     /**

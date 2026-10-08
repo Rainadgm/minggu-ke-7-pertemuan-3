@@ -3,6 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\CashierTransactionController;
+use App\Http\Controllers\KasirDashboardController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StrukController;
 
 
 /*
@@ -93,11 +99,8 @@ Route::post('/login', function (Request $request) {
 |
 */
 
-Route::get('/admin', function () {
-
-    return view('admin.dashboard');
-
-})->middleware(['auth', 'admin'])
+Route::get('/admin', AdminDashboardController::class)
+  ->middleware(['auth', 'admin'])
   ->name('admin');
 
 
@@ -110,12 +113,20 @@ Route::get('/admin', function () {
 |
 */
 
-Route::get('/admin/dashboard', function () {
-
-    return view('admin.dashboard');
-
-})->middleware(['auth', 'admin'])
+Route::get('/admin/dashboard', AdminDashboardController::class)
+  ->middleware(['auth', 'admin'])
   ->name('admin.dashboard');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::resource('/products', ProductController::class)->names('products');
+});
 
 
 /*
@@ -129,11 +140,8 @@ Route::get('/admin/dashboard', function () {
 |
 */
 
-Route::get('/kasir', function () {
-
-    return view('kasir.dashboard');
-
-})->middleware(['auth', 'kasir'])
+Route::get('/kasir', fn () => redirect()->route('kasir.dashboard'))
+  ->middleware(['auth', 'kasir'])
   ->name('kasir');
 
 
@@ -146,12 +154,15 @@ Route::get('/kasir', function () {
 |
 */
 
-Route::get('/kasir/dashboard', function () {
-
-    return view('kasir.dashboard');
-
-})->middleware(['auth', 'kasir'])
+Route::get('/kasir/dashboard', KasirDashboardController::class)
+  ->middleware(['auth', 'kasir'])
   ->name('kasir.dashboard');
+
+Route::middleware(['auth', 'kasir'])->prefix('kasir')->name('kasir.')->group(function () {
+    Route::get('/printers', [StrukController::class, 'printers'])->name('printers');
+    Route::post('/transactions/{transaction}/receipt', [StrukController::class, 'printTransaction'])->name('transactions.receipt');
+    Route::post('/transactions', [CashierTransactionController::class, 'store'])->name('transactions.store');
+});
 
 
 /*

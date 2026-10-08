@@ -13,7 +13,7 @@
 
                     <div class="mt-8 flex flex-wrap gap-4">
                         <a href="#produk-list" class="inline-flex rounded-full bg-amber-400 px-6 py-3 text-sm font-black text-slate-900 transition hover:bg-amber-300">Lihat Katalog</a>
-                        <a href="{{ route('products.create') }}" class="inline-flex rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10">Tambah Produk</a>
+                        <a href="{{ route('admin.dashboard') }}" class="inline-flex rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10">Kembali ke Dashboard</a>
                     </div>
                 </div>
 
@@ -75,7 +75,10 @@
                         <article class="group overflow-hidden rounded-[1.8rem] border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
                             <div class="relative h-64 overflow-hidden bg-gradient-to-br from-slate-200 via-white to-emerald-100">
                                 @if ($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
+                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" onerror="this.hidden = true; this.nextElementSibling.hidden = false;" class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
+                                    <div hidden class="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-200 via-emerald-50 to-amber-100 text-4xl font-black text-slate-500">
+                                        {{ strtoupper(substr($product->name, 0, 1)) }}
+                                    </div>
                                 @else
                                     <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-200 via-emerald-50 to-amber-100 text-4xl font-black text-slate-500">
                                         {{ strtoupper(substr($product->name, 0, 1)) }}
