@@ -12,6 +12,13 @@ test('cashier can open the cashier dashboard', function () {
         ->assertSee('Pilih barang')
         ->assertSee('Keranjang belanja')
         ->assertSee('Checkout')
+        ->assertSee('Konfirmasi Pembayaran')
+        ->assertSee('Jumlah item')
+        ->assertSee('Konfirmasi &amp; Bayar', false)
+        ->assertSee('Pembayaran Berhasil')
+        ->assertSee('No. Invoice')
+        ->assertSee('Selesai Tanpa Cetak')
+        ->assertSee('Cetak Struk')
         ->assertSee($cashier->name);
 });
 

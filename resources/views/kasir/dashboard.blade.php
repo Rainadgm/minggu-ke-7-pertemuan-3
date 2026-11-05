@@ -6,6 +6,80 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard Kasir | MiniMarket</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .checkout-confirm-modal .modal-content {
+            border: 0;
+            border-radius: 0.9rem;
+            box-shadow: 0 1.25rem 3rem rgb(15 23 42 / 20%);
+        }
+
+        .checkout-confirm-modal .modal-body {
+            padding: 1.75rem 1.5rem 1rem;
+        }
+
+        .checkout-confirm-icon {
+            width: 3rem;
+            height: 3rem;
+            color: #a83232;
+            background: #fae9e3;
+        }
+
+        .checkout-confirm-summary {
+            border: 1px solid #f0dfe0;
+            border-radius: 0.65rem;
+            background: #fffafa;
+        }
+
+        .checkout-confirm-total {
+            color: #8e2929;
+        }
+
+        .checkout-confirm-modal .btn-confirm,
+        .checkout-success-modal .btn-confirm {
+            color: #fff;
+            background: #b83c3d;
+            border-color: #b83c3d;
+        }
+
+        .checkout-confirm-modal .btn-confirm:hover,
+        .checkout-success-modal .btn-confirm:hover {
+            color: #fff;
+            background: #9e3031;
+            border-color: #9e3031;
+        }
+
+        .checkout-success-modal .modal-content {
+            overflow: hidden;
+            border: 0;
+            border-radius: 0.9rem;
+            box-shadow: 0 1.25rem 3rem rgb(15 23 42 / 20%);
+        }
+
+        .checkout-success-modal .modal-body {
+            padding: 1.75rem 1.5rem 1rem;
+        }
+
+        .checkout-success-icon {
+            width: 3rem;
+            height: 3rem;
+            color: #a83232;
+            background: #fae9e3;
+        }
+
+        .checkout-success-summary {
+            border: 1px solid #f0dfe0;
+            border-radius: 0.65rem;
+            background: #fffafa;
+        }
+
+        .checkout-success-total {
+            color: #8e2929;
+        }
+
+        .checkout-success-modal .modal-footer {
+            background: #fffafa;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-dark bg-dark">
@@ -121,6 +195,93 @@
         </section>
     </main>
 
+    <div class="modal fade checkout-confirm-modal" id="checkoutConfirmModal" tabindex="-1" aria-labelledby="checkoutConfirmModalLabel" aria-describedby="checkout-confirm-description" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body position-relative text-center">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    <div class="checkout-confirm-icon d-inline-flex align-items-center justify-content-center rounded-4 mb-3" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 3h6v4H9V3Zm-1 11 2 2 5-5" />
+                        </svg>
+                    </div>
+                    <h2 class="h5 fw-bold mb-1" id="checkoutConfirmModalLabel">Konfirmasi Pembayaran</h2>
+                    <p class="small text-secondary mb-3" id="checkout-confirm-description">Pastikan jumlah pembayaran sudah sesuai sebelum transaksi disimpan.</p>
+
+                    <div class="checkout-confirm-summary p-3 text-start">
+                        <div class="d-flex justify-content-between gap-3 small pb-2 mb-2 border-bottom">
+                            <span class="text-secondary">Jumlah item</span>
+                            <strong id="confirm-item-count">0 item</strong>
+                        </div>
+                        <div class="d-flex justify-content-between gap-3 small pb-2 mb-2 border-bottom">
+                            <span class="checkout-confirm-total fw-semibold">Total belanja</span>
+                            <strong class="checkout-confirm-total" id="confirm-total">Rp 0</strong>
+                        </div>
+                        <div class="d-flex justify-content-between gap-3 small pb-2 mb-2 border-bottom">
+                            <span class="text-secondary">Uang dibayar</span>
+                            <strong id="confirm-cash">Rp 0</strong>
+                        </div>
+                        <div class="d-flex justify-content-between gap-3 small">
+                            <span class="text-secondary">Kembalian</span>
+                            <strong id="confirm-change">Rp 0</strong>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger small text-start mt-3 mb-0 py-2" id="checkout-confirm-error" role="alert" hidden></div>
+                </div>
+                <div class="modal-footer justify-content-center border-0 pt-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">Periksa Lagi</button>
+                    <button type="button" class="btn btn-confirm px-3" id="confirm-checkout">
+                        <span class="confirm-checkout-label">Konfirmasi &amp; Bayar</span>
+                        <span class="spinner-border spinner-border-sm ms-1" role="status" aria-hidden="true" hidden></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade checkout-success-modal" id="checkoutSuccessModal" tabindex="-1" aria-labelledby="checkoutSuccessModalLabel" aria-describedby="checkout-success-description" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body position-relative text-center">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    <div class="checkout-success-icon d-inline-flex align-items-center justify-content-center rounded-4 mb-2" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 3h10v18H7zM9 7h6M9 11h6M9 15h6M9 19h6" />
+                        </svg>
+                    </div>
+                    <h2 class="h5 fw-bold mb-1" id="checkoutSuccessModalLabel">Pembayaran Berhasil</h2>
+                    <p class="small text-secondary mb-3" id="checkout-success-description">Transaksi sudah tersimpan. Apakah Anda ingin mencetak struk untuk pelanggan?</p>
+
+                    <div class="checkout-success-summary p-3 text-start">
+                        <div class="d-flex justify-content-between align-items-start gap-3 small pb-2 mb-2 border-bottom">
+                            <span class="text-secondary">No. Invoice</span>
+                            <strong class="text-end text-break" id="success-transaction-code"></strong>
+                        </div>
+                        <div class="d-flex justify-content-between gap-3 small pb-2 mb-2 border-bottom">
+                            <span class="checkout-success-total fw-semibold">Total belanja</span>
+                            <strong class="checkout-success-total" id="success-total"></strong>
+                        </div>
+                        <div class="d-flex justify-content-between gap-3 small">
+                            <span class="text-secondary">Kembalian</span>
+                            <strong id="success-change"></strong>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger small text-start mt-3 mb-0 py-2" id="checkout-success-error" role="alert" hidden></div>
+                </div>
+                <div class="modal-footer justify-content-center gap-2 border-0 pt-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">Selesai Tanpa Cetak</button>
+                    <button type="button" class="btn btn-confirm px-3" id="print-success-receipt">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="me-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M7 14h10v7H7z" />
+                        </svg>
+                        <span class="print-success-label">Cetak Struk</span>
+                        <span class="spinner-border spinner-border-sm ms-1" role="status" aria-hidden="true" hidden></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="printerModal" tabindex="-1" aria-labelledby="printerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -159,6 +320,17 @@
             const checkoutStatus = document.getElementById('checkout-status');
             const receiptSummary = document.getElementById('receipt-summary');
             const savedPrinterKey = 'minimarket.kasir.printer';
+            const checkoutConfirmModalElement = document.getElementById('checkoutConfirmModal');
+            const checkoutConfirmModal = new bootstrap.Modal(checkoutConfirmModalElement);
+            const checkoutSuccessModal = new bootstrap.Modal(document.getElementById('checkoutSuccessModal'));
+            const confirmCheckoutButton = document.getElementById('confirm-checkout');
+            const confirmCheckoutLabel = confirmCheckoutButton.querySelector('.confirm-checkout-label');
+            const confirmCheckoutSpinner = confirmCheckoutButton.querySelector('.spinner-border');
+            const confirmCheckoutError = document.getElementById('checkout-confirm-error');
+            const successPrintButton = document.getElementById('print-success-receipt');
+            const successPrintLabel = successPrintButton.querySelector('.print-success-label');
+            const successPrintSpinner = successPrintButton.querySelector('.spinner-border');
+            const successPrintError = document.getElementById('checkout-success-error');
             let lastTransactionId = null;
             const rupiah = amount => new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -166,6 +338,44 @@
                 maximumFractionDigits: 0,
             }).format(amount);
             const getTotal = () => [...cart.values()].reduce((sum, item) => sum + item.priceCents * item.quantity, 0);
+
+            const printTransactionReceipt = async (statusElement, button) => {
+                const savedPrinter = localStorage.getItem(savedPrinterKey);
+                if (!savedPrinter) {
+                    statusElement.textContent = 'Pilih printer melalui tombol Pilih printer terlebih dahulu.';
+                    statusElement.className = 'small mt-2 text-danger';
+                    return false;
+                }
+
+                button.disabled = true;
+                statusElement.textContent = 'Mengirim struk transaksi ke printer...';
+                statusElement.className = 'small mt-2 text-secondary';
+
+                try {
+                    const printResponse = await fetch(@json(route('kasir.transactions.receipt', ['transaction' => '__TRANSACTION__'])).replace('__TRANSACTION__', String(lastTransactionId)), {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        },
+                        body: JSON.stringify({ printer: savedPrinter }),
+                    });
+                    const printResult = await printResponse.json();
+                    if (!printResponse.ok) {
+                        throw new Error(printResult.message || printResult.errors?.printer?.[0] || 'Struk transaksi gagal dicetak.');
+                    }
+                    statusElement.textContent = printResult.message;
+                    statusElement.className = 'small mt-2 text-success';
+                    return true;
+                } catch (error) {
+                    statusElement.textContent = error.message || 'Struk transaksi gagal dicetak.';
+                    statusElement.className = 'small mt-2 text-danger';
+                    return false;
+                } finally {
+                    button.disabled = false;
+                }
+            };
 
             const renderCart = () => {
                 cartItems.replaceChildren();
@@ -280,8 +490,43 @@
             });
             cashReceived.addEventListener('input', updateChangePreview);
 
-            checkoutButton.addEventListener('click', async () => {
+            successPrintButton.addEventListener('click', async () => {
+                successPrintError.hidden = true;
+                successPrintButton.disabled = true;
+                successPrintLabel.textContent = 'Mencetak...';
+                successPrintSpinner.hidden = false;
+                const printed = await printTransactionReceipt(successPrintError, successPrintButton);
+                if (printed) {
+                    checkoutSuccessModal.hide();
+                } else {
+                    successPrintError.className = 'alert alert-danger small text-start mt-3 mb-0 py-2';
+                    successPrintError.hidden = false;
+                }
+                successPrintButton.disabled = false;
+                successPrintLabel.textContent = 'Cetak Struk';
+                successPrintSpinner.hidden = true;
+            });
+
+            checkoutButton.addEventListener('click', () => {
                 if (cart.size === 0) return;
+
+                const itemCount = [...cart.values()].reduce((count, item) => count + item.quantity, 0);
+                const totalCents = getTotal();
+                const cashCents = Math.round((Number(cashReceived.value) || 0) * 100);
+                document.getElementById('confirm-item-count').textContent = `${itemCount} item`;
+                document.getElementById('confirm-total').textContent = rupiah(totalCents / 100);
+                document.getElementById('confirm-cash').textContent = rupiah(cashCents / 100);
+                document.getElementById('confirm-change').textContent = rupiah(Math.max(0, cashCents - totalCents) / 100);
+                confirmCheckoutError.hidden = true;
+                checkoutConfirmModal.show();
+            });
+
+            confirmCheckoutButton.addEventListener('click', async () => {
+                if (cart.size === 0) return;
+                confirmCheckoutError.hidden = true;
+                confirmCheckoutButton.disabled = true;
+                confirmCheckoutLabel.textContent = 'Menyimpan transaksi...';
+                confirmCheckoutSpinner.hidden = false;
                 checkoutButton.disabled = true;
                 checkoutStatus.textContent = 'Menyimpan transaksi dan memperbarui stok...';
                 checkoutStatus.className = 'small mt-3 text-secondary';
@@ -328,41 +573,7 @@
                     printReceiptButton.type = 'button';
                     printReceiptButton.textContent = 'Cetak struk transaksi';
                     lastTransactionId = sale.id;
-                    printReceiptButton.addEventListener('click', async () => {
-                        const savedPrinter = localStorage.getItem(savedPrinterKey);
-                        if (!savedPrinter) {
-                            receiptStatus.textContent = 'Pilih printer melalui tombol Pilih printer terlebih dahulu.';
-                            receiptStatus.className = 'small mt-2 text-danger';
-                            return;
-                        }
-
-                        printReceiptButton.disabled = true;
-                        receiptStatus.textContent = 'Mengirim struk transaksi ke printer...';
-                        receiptStatus.className = 'small mt-2 text-secondary';
-
-                        try {
-                            const printResponse = await fetch(@json(route('kasir.transactions.receipt', ['transaction' => '__TRANSACTION__'])).replace('__TRANSACTION__', String(lastTransactionId)), {
-                                method: 'POST',
-                                headers: {
-                                    Accept: 'application/json',
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                },
-                                body: JSON.stringify({ printer: savedPrinter }),
-                            });
-                            const printResult = await printResponse.json();
-                            if (!printResponse.ok) {
-                                throw new Error(printResult.message || printResult.errors?.printer?.[0] || 'Struk transaksi gagal dicetak.');
-                            }
-                            receiptStatus.textContent = printResult.message;
-                            receiptStatus.className = 'small mt-2 text-success';
-                        } catch (error) {
-                            receiptStatus.textContent = error.message || 'Struk transaksi gagal dicetak.';
-                            receiptStatus.className = 'small mt-2 text-danger';
-                        } finally {
-                            printReceiptButton.disabled = false;
-                        }
-                    });
+                    printReceiptButton.addEventListener('click', () => printTransactionReceipt(receiptStatus, printReceiptButton));
                     const invoiceLink = document.createElement('a');
                     invoiceLink.className = 'btn btn-sm btn-outline-primary mt-3 ms-2';
                     invoiceLink.href = @json(route('kasir.transactions.invoice', ['transaction' => '__TRANSACTION__'])).replace('__TRANSACTION__', String(sale.id));
@@ -370,6 +581,12 @@
                     receiptSummary.append(receiptTitle, receiptBody, receiptStatus, printReceiptButton, invoiceLink);
                     receiptSummary.hidden = false;
 
+                    document.getElementById('success-transaction-code').textContent = sale.code;
+                    document.getElementById('success-total').textContent = rupiah(Number(sale.total));
+                    document.getElementById('success-change').textContent = rupiah(Number(sale.change));
+                    successPrintError.hidden = true;
+                    successPrintError.textContent = '';
+                    successPrintLabel.textContent = sale.receipt.printed ? 'Cetak Struk Lagi' : 'Cetak Struk';
                     sale.items.forEach(item => {
                         const productButton = document.querySelector(`.add-to-cart[data-product-id="${item.product_id}"]`);
                         if (productButton) {
@@ -385,10 +602,19 @@
                     checkoutStatus.textContent = 'Transaksi tersimpan dan stok berhasil diperbarui.';
                     checkoutStatus.className = 'small mt-3 text-success';
                     renderCart();
+                    checkoutConfirmModalElement.addEventListener('hidden.bs.modal', () => checkoutSuccessModal.show(), { once: true });
+                    checkoutConfirmModal.hide();
                 } catch (error) {
-                    checkoutStatus.textContent = error.message || 'Checkout gagal.';
+                    const message = error.message || 'Checkout gagal.';
+                    checkoutStatus.textContent = message;
                     checkoutStatus.className = 'small mt-3 text-danger';
-                    checkoutButton.disabled = false;
+                    confirmCheckoutError.textContent = message;
+                    confirmCheckoutError.hidden = false;
+                    updateChangePreview();
+                } finally {
+                    confirmCheckoutButton.disabled = false;
+                    confirmCheckoutLabel.textContent = 'Konfirmasi & Bayar';
+                    confirmCheckoutSpinner.hidden = true;
                 }
             });
 

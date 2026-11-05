@@ -10,6 +10,10 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\KasirDashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StrukController;
+use App\Http\Controllers\MidtransController;
+
+Route::post('/checkout', [MidtransController::class, 'checkout']);
+Route::post('/midtrans/notification', [MidtransController::class, 'notification']);
 
 /*
 |--------------------------------------------------------------------------
@@ -183,3 +187,10 @@ Route::post('/logout', function (Request $request) {
     return redirect()->route('login');
 
 })->middleware('auth')->name('logout');
+
+// TAMBAHKAN DI SINI (Paling bawah file web.php):
+Route::get('/print-receipt', [StrukController::class, 'print']);
+
+Route::get('/form-checkout', function () {
+    return view('checkout');
+});
