@@ -62,6 +62,7 @@ class ProductController extends Controller
 
         $data['is_active'] = $request->boolean('is_active');
         $file = $request->file('image');
+
         if ($file) {
             $original = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $ext = strtolower($file->getClientOriginalExtension());
@@ -70,12 +71,9 @@ class ProductController extends Controller
 
             $manager = new ImageManager(Driver::class);
             $image = $manager->read($file->getRealPath())->cover(800, 800);
-
-            if ($ext === 'png') {
-                $encoded = $image->encodeByExtension('png', quality: 90);
-            } else {
-                $encoded = $image->encodeByExtension('jpg', quality: 85);
-            }
+            $encoded = $ext === 'png'
+                ? $image->encodeByExtension('png', quality: 90)
+                : $image->encodeByExtension('jpg', quality: 85);
 
             Storage::disk('public')->put($path, $encoded->toString());
             $data['image'] = $path;
